@@ -34,7 +34,7 @@ applications:
     - repoURL: https://github.com/masudalabs/main-gitops.git
       targetRevision: "main"
       ref: values
-    - repoURL: https://github.com/argoproj/argocd-helm.git
+    - repoURL: https://argoproj.github.io/argo-helm
       targetRevision: 7.7.3
       chart: 'argo-cd'
       helm:
@@ -61,7 +61,7 @@ applications:
     - repoURL: https://github.com/masudalabs/main-gitops.git
       targetRevision: "main"
       ref: values
-    - repoURL: https://github.com/argoproj/argocd-helm.git
+    - repoURL: https://argoproj.github.io/argo-helm
       targetRevision: 2.0.2
       chart: 'argocd-apps'
       helm:
