@@ -40,7 +40,7 @@ applications:
       helm:
         releaseName: 'argocd'
         valueFiles:
-          - $values/clusters/in-cluster/argocd/values.yaml
+          - $values/gitops/clusters/in-cluster/argocd/values.yaml
     destination:
       server: https://kubernetes.default.svc
       namespace: argocd
@@ -67,7 +67,7 @@ applications:
       helm:
         releaseName: 'argocd-apps'
         valueFiles:
-          - $values/clusters/in-cluster/argocd-apps/values.yaml
+          - $values/gitops/clusters/in-cluster/argocd-apps/values.yaml
     destination:
       server: https://kubernetes.default.svc
       namespace: argocd
