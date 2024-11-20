@@ -13,7 +13,7 @@ spec:
               values:
                 addonChart: mcp-connector
                 addonChartVersion: 0.8.0
-                addonChartRepository: "xpkg.upbound.io/spaces-artifacts/"
+                addonChartRepository: "xpkg.upbound.io/spaces-artifacts"
               selector:
                 matchLabels:
                   cluster-type: "ground-zero"
