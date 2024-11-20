@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: addons-mcp-connector
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+    - merge:
+        mergeKeys: [server]
+        generators:
+          - clusters:
+              values:
+                addonChart: mcp-connector
+                addonChartVersion: 0.8.0
+                addonChartRepository: "oci://xpkg.upbound.io/spaces-artifacts/"
+  template:
+    metadata:
+      name: addon-{{name}}-{{values.addonChart}}
+      labels:
+        addon-name: '{{values.addonChart}}'
+    spec:
+      project: default
+      sources:
+        - repoURL: "https://github.com/masudalabs/main-gitops"
+          targetRevision: "main"
+          ref: values
+        - chart: "{{values.addonChart}}"
+          repoURL: "{{values.addonChartRepository}}"
+          targetRevision: "{{values.addonChartVersion}}"
+          helm:
+            releaseName: "{{values.addonChart}}"
+            ignoreMissingValueFiles: true
+            valueFiles:
+              - $values/gitops//environments/base/addons/{{values.addonChart}}/values.yaml
+              - $values/gitops/environments/{{metadata.labels.environment}}/addons/{{values.addonChart}}/values.yaml
+              - $values/gitops/clusters/{{name}}/addons/{{values.addonChart}}/values.yaml
+      destination:
+        namespace: "{{values.addonChart}}"
+        name: "{{name}}"
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+          - RespectIgnoreDifferences=true
