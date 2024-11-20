@@ -24,50 +24,6 @@ projects:
       - group: '*'
         kind: '*'
 
-
-  manager-bootstrap:
-    namespace: argocd
-    additionalLabels:
-      type: 'bootstrap'
-    syncPolicy:
-      preserveResourcesOnDeletion: true
-    generators:
-      - clusters:
-          selector:
-            matchLabels:
-              environment: ops
-    template:
-      metadata:
-        name: manager-argocd-bootstrap
-        labels:
-          type: 'bootstrap'
-      spec:
-        project: bootstrap
-        sources:
-          - repoURL: '{{metadata.annotations.repo-url}}'
-            path: clusters/
-            targetRevision: '{{metadata.annotations.repo-revision}}'
-            directory:
-              exclude: exclude/*
-          - repoURL: '{{metadata.annotations.repo-url}}'
-            path: blue-prints/addons
-            targetRevision: '{{metadata.annotations.repo-revision}}'
-            directory:
-              exclude: exclude/*
-              recurse: true
-          - repoURL: '{{metadata.annotations.repo-url}}'
-            path: blue-prints/workloads
-            targetRevision: '{{metadata.annotations.repo-revision}}'
-            directory:
-              exclude: exclude/*
-        destination:
-          namespace: argocd
-          name: '{{name}}'
-        syncPolicy:
-          automated:
-            allowEmpty: true
-            prune: false
-
 applications:
   appset-bootstrap:
     namespace: argocd
