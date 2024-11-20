@@ -1,0 +1,78 @@
+projects:
+  bootstrap:
+    namespace: argocd
+    description: 'Project for initial bootstrap'
+    sourceRepos:
+      - 'https://github.com/masudalabs/*'
+      - 'https://argoproj.github.io/*'
+      - 'https://charts.external-secrets.io'
+      - 'https://prometheus-community.github.io/*'
+    sourceNamespaces:
+      - '*'
+    destinations:
+      - namespace: 'kube-system'
+        server: '*'
+      - namespace: '!default'
+        server: '*'
+      - namespace: 'argocd'
+        server: '*'
+      - namespace: 'external-secrets'
+        server: '*'
+      - namespace: 'prometheus'
+        server: '*'
+    clusterResourceWhitelist:
+      - group: '*'
+        kind: '*'
+
+applications:
+  self-argocd:
+    namespace: argocd
+    additionalLabels:
+      type: "bootstrap"
+    project: bootstrap
+    sources:
+    - repoURL: https://github.com/masudalabs/main-gitops.git
+      targetRevision: "main"
+      ref: values
+    - repoURL: https://github.com/argoproj/argocd-helm.git
+      targetRevision: 7.7.3
+      chart: 'argo-cd'
+      helm:
+        releaseName: 'argocd'
+        valueFiles:
+          - $values/clusters/in-cluster/argocd/values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: argocd
+    syncPolicy:
+      automated:
+        prune: false
+        selfHeal: false
+        allowEmpty: true
+      syncOptions:
+      - CreateNamespace=true
+
+  self-argocd-apps:
+    namespace: argocd
+    additionalLabels:
+      type: "bootstrap"
+    project: bootstrap
+    sources:
+    - repoURL: https://github.com/masudalabs/main-gitops.git
+      targetRevision: "main"
+      ref: values
+    - repoURL: https://github.com/argoproj/argocd-helm.git
+      targetRevision: 2.0.2
+      chart: 'argocd-apps'
+      helm:
+        releaseName: 'argocd-apps'
+        valueFiles:
+          - $values/clusters/in-cluster/argocd-apps/values.yaml
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: argocd
+    syncPolicy:
+      automated:
+        prune: false
+        selfHeal: false
+        allowEmpty: true
